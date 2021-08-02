@@ -118,9 +118,8 @@ public:
         assert(hashGenesisBlock == uint256("0x00000ff29ade6ed0869285f2511de3a6e7939045d9da16200f1a1693ababc136"));
         assert(genesis.hashMerkleRoot == uint256("0xf26189bb458afe0afd4ab088e519ff4c9034aea91a0ecad33cc4114d8b270d51"));
 
-        vSeeds.push_back(CDNSSeedData("nodea.litecoinbolt.net", "nodea.litecoinbolt.net"));
-        vSeeds.push_back(CDNSSeedData("nodeb.litecoinbolt.net", "nodeb.litecoinbolt.net"));
-        vSeeds.push_back(CDNSSeedData("nodec.litecoinbolt.net", "nodec.litecoinbolt.net"));
+        vSeeds.push_back(CDNSSeedData("142.93.60.164", "142.93.60.164"));
+        vSeeds.push_back(CDNSSeedData("147.182.179.61", "147.182.179.61"));
 
         base58Prefixes[PUBKEY_ADDRESS] = list_of(27).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[SCRIPT_ADDRESS] = list_of(63).convert_to_container<std::vector<unsigned char> >();

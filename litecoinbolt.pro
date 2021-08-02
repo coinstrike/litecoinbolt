@@ -18,25 +18,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 # for boost thread win32 with _win32 sufix
 # use: BOOST_THREAD_LIB_SUFFIX=_win32-...
 # or when linking against a specific BerkelyDB version: BDB_LIB_SUFFIX=-4.8
-BOOST_LIB_SUFFIX=
-windows:BOOST_INCLUDE_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/include/boost
-windows:BOOST_LIB_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/lib
-macx:BOOST_LIB_PATH= /usr/local/Cellar/boost/1.65.1/lib/
-windows:BDB_INCLUDE_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/include
-windows:BDB_LIB_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/lib
-macx:BDB_LIB_PATH=/usr/local/Cellar/berkeley-db\@4/4.8.30/lib/
-windows:OPENSSL_INCLUDE_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/include/openssl
-windows:OPENSSL_LIB_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/lib
-macx:OPENSSL_LIB_PATH=/usr/local/opt/openssl/lib
-MINIUPNPC_LIB_SUFFIX=-miniupnpc
-windows:MINIUPNPC_INCLUDE_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/include
-windows:MINIUPNPC_LIB_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/libc
-macx:MINIUPNPC_INCLUDE_PATH=/usr/local/Cellar/miniupnpc/2.0.20170509/include
-macx:MINIUPNPC_LIB_PATH=/usr/local/Cellar/miniupnpc/2.0.20170509/lib
-macx:QRENCODE_INCLUDE_PATH=/usr/local/Cellar/qrencode/3.4.4/include
-macx:QRENCODE_LIB_PATH=/usr/local/Cellar/qrencode/3.4.4/lib
-windows:QRENCODE_INCLUDE_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/include
-windows:QRENCODE_LIB_PATH=/home/build/Documents/mxe/usr/i686-w64-mingw32.static/libc
 
 # Dependency library locations can be customized with:
 #    BOOST_INCLUDE_PATH, BOOST_LIB_PATH, BDB_INCLUDE_PATH,
@@ -66,8 +47,8 @@ QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1
 }
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
 win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
-win32:QMAKE_LFLAGS *= -Wl,--large-address-aware -static
-#win32:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
+#win32:QMAKE_LFLAGS *= -Wl,--large-address-aware -static
+win32:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
 
 
 # use: qmake "USE_QRCODE=1"
@@ -112,7 +93,7 @@ contains(BITCOIN_NEED_QT_PLUGINS, 1) {
 }
 
 INCLUDEPATH += src/leveldb/include src/leveldb/helpers
-macx: INCLUDEPATH += /usr/include /usr/local/opt/berkeley-db@4/include /usr/local/opt/boost/include /usr/local/opt/openssl/include
+# macx: INCLUDEPATH += /usr/include /usr/local/opt/berkeley-db@4/include /usr/local/opt/boost/include /usr/local/opt/openssl/include
 LIBS += $$PWD/src/leveldb/libleveldb.a $$PWD/src/leveldb/libmemenv.a
 SOURCES += src/txdb-leveldb.cpp
 
@@ -125,7 +106,7 @@ SOURCES += src/txdb-leveldb.cpp
         QMAKE_RANLIB = $$replace(QMAKE_STRIP, strip, ranlib)
     }
     LIBS += -lshlwapi
-    # genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
+     genleveldb.commands = cd $$PWD/src/leveldb && CC=$$QMAKE_CC CXX=$$QMAKE_CXX TARGET_OS=OS_WINDOWS_CROSSCOMPILE $(MAKE) OPT=\"$$QMAKE_CXXFLAGS $$QMAKE_CXXFLAGS_RELEASE\" libleveldb.a libmemenv.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libleveldb.a && $$QMAKE_RANLIB $$PWD/src/leveldb/libmemenv.a
 }
 genleveldb.target = $$PWD/src/leveldb/libleveldb.a
 genleveldb.depends = FORCE
@@ -358,7 +339,8 @@ CODECFORTR = UTF-8
 TRANSLATIONS = $$files(src/qt/locale/bitcoin_*.ts)
 
 isEmpty(QMAKE_LRELEASE) {
-    QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
+    win32:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\\lrelease.exe 
+    else:QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
 }
 isEmpty(QM_DIR):QM_DIR = $$PWD/src/qt/locale
 # automatically build translations, so they can be included in resource file
@@ -402,7 +384,7 @@ isEmpty(BOOST_LIB_PATH) {
 
 isEmpty(BOOST_INCLUDE_PATH) {
     #macx:BOOST_INCLUDE_PATH = /opt/local/include
-    macx:BOOST_INCLUDE_PATH = /usr/local/include
+ #   macx:BOOST_INCLUDE_PATH = /usr/local/include
 }
 
 windows:DEFINES += WIN32
